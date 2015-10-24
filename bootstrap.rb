@@ -48,4 +48,6 @@ AUTOLOAD_PATHS.each do |path|
 end
 
 ActiveRecord::Base.configurations = YAML.load_file("config/database.yml")
+ActiveRecord::Tasks::DatabaseTasks.env = ActiveRecord::ConnectionHandling::DEFAULT_ENV.call.to_s
+ActiveRecord::Tasks::DatabaseTasks.db_dir = "db"
 ActiveRecord::Base.establish_connection
