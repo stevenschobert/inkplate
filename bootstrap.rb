@@ -1,3 +1,5 @@
+require 'rubygems'
+require 'bundler/setup'
 AUTOLOAD_PATHS = [ "app" ]
 LOAD_PATH_ADDITIONS = [ "lib" ]
 

@@ -1,6 +1,4 @@
 require_relative 'bootstrap'
-require 'rubygems'
-require 'bundler/setup'
 
 require 'xmlrpc/rack_server'
 
