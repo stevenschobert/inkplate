@@ -2,6 +2,7 @@ source 'https://rubygems.org'
 
 gem 'dotenv',         '~> 2.0.2'
 gem 'rack',           '~> 1.6.4'
+gem 'simple_router',  '~> 0.9.8'
 gem 'activerecord',   '~> 4.2.4'
 gem 'pg',             '~> 0.18.3'
 

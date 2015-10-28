@@ -28,6 +28,7 @@ GEM
       method_source (~> 0.8.1)
       slop (~> 3.4)
     rack (1.6.4)
+    simple_router (0.9.8.1)
     slop (3.6.0)
     thread_safe (0.3.5)
     tzinfo (1.2.2)
@@ -42,6 +43,7 @@ DEPENDENCIES
   pg (~> 0.18.3)
   pry (~> 0.10.3)
   rack (~> 1.6.4)
+  simple_router (~> 0.9.8)
 
 BUNDLED WITH
    1.10.6
