@@ -3,7 +3,7 @@
 module Api
   class MetaWeblog
 
-    include XMLRPC
+    include XmlRpc
 
     self.namespace = "metaWeblog"
 

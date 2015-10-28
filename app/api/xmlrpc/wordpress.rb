@@ -3,7 +3,7 @@
 module Api
   class Wordpress
 
-    include XMLRPC
+    include XmlRpc
 
     self.namespace = "wp"
 

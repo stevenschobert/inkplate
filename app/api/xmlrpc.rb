@@ -1,5 +1,5 @@
 module Api
-  module XMLRPC
+  module XmlRpc
 
     class NamespaceNotDefinedError < StandardError
       attr_reader :klass
