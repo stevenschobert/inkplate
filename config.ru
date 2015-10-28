@@ -1,14 +1,12 @@
 require_relative 'bootstrap'
 
-require 'xmlrpc/rack_server'
+require 'rack/json_server'
+require 'rack/xmlrpc_server'
 
-server = XMLRPC::RackServer.new
+server = Proc.new { |env| [200, {}, []] }
 
-# mount any xml api implementations in their
-# respective namespace
-Api::XMLRPC.implementations.each do |impl|
-  server.add_handler(XMLRPC.iPIMethods(impl[:namespace]), impl[:klass].new)
-end
+use JsonServer
+use XmlRpcServer
 
 run server
 
