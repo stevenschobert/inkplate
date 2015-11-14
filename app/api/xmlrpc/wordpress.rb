@@ -23,10 +23,10 @@ module Api
       categories.map do |category|
         {
           categoryId: category.id,
-          parentId: category.parent_id,
-          categoryName: category.name,
-          categoryDescription: category.description,
-          description: category.name,
+          parentId: category.parent_id.to_i,
+          categoryName: category.name.to_s,
+          categoryDescription: category.description.to_s,
+          description: category.name.to_s,
           htmlUrl: "",
           rssUrl: ""
         }
