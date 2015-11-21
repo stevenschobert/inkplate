@@ -8,10 +8,7 @@ module Api
     self.namespace = "mt"
 
     def getPostCategories(post_id, username, password)
-      categories = Category
-        .select("c.id, c.name")
-        .from("categories c, categorized_posts cp")
-        .where("cp.post_id = ?", [post_id])
+      categories = Category.for_post(post_id)
 
       categories.map do |category|
         {

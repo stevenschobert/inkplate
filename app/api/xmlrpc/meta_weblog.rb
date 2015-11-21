@@ -60,10 +60,7 @@ module Api
     protected
 
     def serialize_post(post)
-      categories = Category
-        .select("c.name")
-        .from("categories c, categorized_posts cp")
-        .where("cp.post_id = ?", [post.id])
+      categories = Category.for_post(post)
 
       {
         postid: post.id,
