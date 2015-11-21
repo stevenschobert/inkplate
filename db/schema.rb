@@ -11,10 +11,24 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151023214447) do
+ActiveRecord::Schema.define(version: 20151113225210) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "categories", force: :cascade do |t|
+    t.integer "parent_id"
+    t.string  "name"
+    t.string  "description"
+  end
+
+  create_table "categorized_posts", force: :cascade do |t|
+    t.integer "category_id"
+    t.integer "post_id"
+  end
+
+  add_index "categorized_posts", ["category_id"], name: "index_categorized_posts_on_category_id", using: :btree
+  add_index "categorized_posts", ["post_id"], name: "index_categorized_posts_on_post_id", using: :btree
 
   create_table "posts", force: :cascade do |t|
     t.string   "title"
