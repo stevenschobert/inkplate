@@ -17,11 +17,25 @@ module Api
 
     self.namespace = "metaWeblog"
 
+    def editPost(post_id, username, password, content, publish)
+      if post = Post.where(id: post_id).first
+        post.title = content["title"]
+
+        if post.save
+          true
+        else
+          raise "Error saving post"
+        end
+      else
+        raise "Post not found"
+      end
+    end
+
     def getPost(post_id, username, password)
       if post = Post.where(id: post_id).first
         serialize_post(post)
       else
-        raise "not found"
+        raise "Post not found"
       end
     end
 
@@ -39,7 +53,7 @@ module Api
       if post.save
         post.id.to_s
       else
-        raise "Should return error here"
+        raise "Error saving post"
       end
     end
 
