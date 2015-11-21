@@ -2,24 +2,13 @@
 # https://codex.wordpress.org/XML-RPC_MetaWeblog_API
 module Api
   class MetaWeblog
-    STATUSES = {
-      "published"   => "publish",     # A published post or page
-      "pending"     => "pending",     # post is pending review
-      "draft"       => "draft",       # a post in draft status
-      "auto-draft"  => "auto-draft",  # a newly created post, with no content
-      "future"      => "future",      # a post to publish in the future
-      "private"     => "private",     # not visible to users who are not logged in
-      "inherit"     => "iherit",      # a revision. see get_children.
-      "trashed"     => "trashed"      # post is in trashbin. added with Version 2.9.
-    }.freeze
-
     include XmlRpc
 
     self.namespace = "metaWeblog"
 
     def editPost(post_id, username, password, content, publish)
       if post = Post.where(id: post_id).first
-        post.title = content["title"]
+        post.attributes = post_params(content)
 
         if post.save
           true
@@ -46,9 +35,7 @@ module Api
     end
 
     def newPost(blog_id, username, password, content, publish)
-      post = Post.new({
-        title: content["title"]
-      })
+      post = Post.new(post_params(content))
 
       if post.save
         post.id.to_s
@@ -61,10 +48,16 @@ module Api
 
     def serialize_post(post)
       categories = Category.for_post(post)
+      status = if post.invisible?
+        "private"
+      else
+        post.status
+      end
 
       {
         postid: post.id,
         title: post.title.to_s,
+        description: post.body,
         dateCreated: post.created_at.localtime.to_datetime,
         date_created_gmt: post.created_at.utc,
         date_modified: post.updated_at.localtime.to_datetime,
@@ -73,20 +66,37 @@ module Api
         permaLink: "http://google.com",
         categories: categories.map{ |c| c.name.to_s },
         mt_keywords: "",
-        mt_excerpt: "",
-        mt_text_more: "",
-        wp_more_text: "",
+        mt_excerpt: post.excerpt,
+        mt_text_more: post.more_text,
+        wp_more_text: post.more_text,
         mt_allow_comments: 0,
         mt_allow_pings: 0,
-        wp_slug: "testslug",
+        wp_slug: post.slug,
         wp_password: "",
         wp_author_id: "",
         wp_author_display_name: "",
-        post_status: STATUSES["published"],
+        post_status: status,
         wp_post_format: "",
         sticky: false,
         custom_fields: []
       }
+    end
+
+    def post_params(params)
+      opts = {
+        title: params["title"],
+        status: params["post_status"],
+        slug: params["wp_slug"],
+        excerpt: params["mt_excerpt"],
+        more_text: params["mt_text_more"],
+        body: params["description"]
+      }
+
+      if opts[:status] == "private"
+        opts[:status] = "invisible"
+      end
+
+      opts
     end
 
   end
