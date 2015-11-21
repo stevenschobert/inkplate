@@ -20,17 +20,7 @@ module Api
     def getCategories(blog_id, username, password)
       categories = Category.all
 
-      categories.map do |category|
-        {
-          categoryId: category.id,
-          parentId: category.parent_id.to_i,
-          categoryName: category.name.to_s,
-          categoryDescription: category.description.to_s,
-          description: category.name.to_s,
-          htmlUrl: "",
-          rssUrl: ""
-        }
-      end
+      categories.map{ |category| serialize_category(category) }
     end
 
     def getPages(blog_id, username, password, max_pages = 10)
@@ -72,6 +62,33 @@ module Api
         html_url: "html-url",
         rss_url: "rss-url"
       }]
+    end
+
+    def newCategory(blog_id, username, password, category)
+      new_category = Category.new({
+        name: category["name"],
+        description: category["description"]
+      })
+
+      if new_category.save
+        new_category.id
+      else
+        raise "Error saving category"
+      end
+    end
+
+    protected
+
+    def serialize_category(category)
+      {
+        categoryId: category.id,
+        parentId: category.parent_id.to_i,
+        categoryName: category.name.to_s,
+        categoryDescription: category.description.to_s,
+        description: category.name.to_s,
+        htmlUrl: "",
+        rssUrl: ""
+      }
     end
 
   end
