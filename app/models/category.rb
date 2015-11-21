@@ -1,5 +1,7 @@
 class Category < ActiveRecord::Base
 
+  has_many :categorized_posts, dependent: :destroy
+
   def self.for_post(post)
     post_id = if post.respond_to?(:id)
       post.id
