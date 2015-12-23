@@ -31,9 +31,16 @@ ActiveRecord::Schema.define(version: 20151113225210) do
   add_index "categorized_posts", ["post_id"], name: "index_categorized_posts_on_post_id", using: :btree
 
   create_table "posts", force: :cascade do |t|
+    t.integer  "status",     default: 0
     t.string   "title"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.string   "slug"
+    t.text     "excerpt"
+    t.text     "more_text"
+    t.text     "body"
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
   end
+
+  add_index "posts", ["status"], name: "index_posts_on_status", using: :btree
 
 end
