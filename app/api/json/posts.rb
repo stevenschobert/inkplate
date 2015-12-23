@@ -2,7 +2,22 @@ module Api
   include Json
 
   get "/api/posts/:id" do |id|
-    { id: id }
+    if post = Post.where(id: id).first
+      {
+        id: id,
+        created_at: post.created_at,
+        updated_at: post.updated_at,
+        body: post.body
+      }
+    end
+  end
+
+  get "/api/posts" do
+    posts = Post.select(:id).map do |p|
+      { id: p.id }
+    end
+
+    { posts: posts }
   end
 
 end
