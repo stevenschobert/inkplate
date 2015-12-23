@@ -16,11 +16,12 @@ class JsonServer
       path = Rack::Utils.unescape(request.path_info)
 
       if route = Api::Json.routes.match(verb, path)
-        response = route.action.call(*route.values)
-        [200, { "Content-Type" => "application/json" }, [response.to_json]]
-      else
-        [404, { "Content-Type" => "application/json" }, [ { error: "not_found"}.to_json ]]
+        if response = route.action.call(*route.values)
+          return [200, { "Content-Type" => "application/json" }, [ response.to_json ]]
+        end
       end
+
+      return [404, { "Content-Type" => "application/json" }, [ { error: "not_found"}.to_json ]]
     else
       [status, headers, body]
     end
