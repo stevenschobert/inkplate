@@ -1,6 +1,13 @@
 require 'rack'
 require 'xmlrpc/server'
 
+# Cause I like my <nil>s in my XMLRPC
+# https://github.com/ruby/ruby/blob/9c6779f53eb485b4653fb750a01447155b9e8fe4/lib/xmlrpc/config.rb#L25
+XMLRPC::Config.module_eval { remove_const(:ENABLE_NIL_CREATE) }
+XMLRPC::Config.module_eval { remove_const(:ENABLE_NIL_PARSER) }
+XMLRPC::Config.const_set(:ENABLE_NIL_CREATE, true)
+XMLRPC::Config.const_set(:ENABLE_NIL_PARSER, true)
+
 class XmlRpcServer < XMLRPC::BasicServer
   MATCH_TYPE = "text/xml".freeze
 
