@@ -8,7 +8,8 @@ module Api
         title: post.title,
         created_at: post.created_at,
         updated_at: post.updated_at,
-        body: post.body
+        body: post.body,
+        slug: post.slug
       }
     end
   end
