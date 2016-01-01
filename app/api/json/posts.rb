@@ -9,7 +9,8 @@ module Api
         created_at: post.created_at,
         updated_at: post.updated_at,
         body: post.body,
-        slug: post.slug
+        slug: post.slug,
+        custom_fields: post.custom_fields
       }
     end
   end

@@ -10,6 +10,8 @@ class CreatePosts < ActiveRecord::Migration
       t.text    :more_text
       t.text    :body
 
+      t.json    :custom_fields
+
       t.timestamps null: false
     end
 

@@ -78,7 +78,11 @@ module Api
         post_status: status,
         wp_post_format: "",
         sticky: false,
-        custom_fields: []
+        custom_fields: post.custom_fields.reduce([]) do |acc, pair|
+          key, value = pair
+          id = key.unpack("C*").reduce(0, &:+)
+          acc.push({ id: id, key: key, value: value })
+        end
       }
     end
 
@@ -91,6 +95,11 @@ module Api
         more_text: params["mt_text_more"],
         body: params["description"]
       }
+
+      opts[:custom_fields] = params.fetch("custom_fields", []).reduce({}) do |acc, pair|
+        acc[pair["key"]] = pair["value"]
+        acc
+      end
 
       if opts[:status] == "private"
         opts[:status] = "invisible"
