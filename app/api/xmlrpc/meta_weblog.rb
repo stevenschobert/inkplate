@@ -53,6 +53,7 @@ module Api
       else
         post.status
       end
+      custom_fields = post.custom_fields || []
 
       {
         postid: post.id,
@@ -78,7 +79,7 @@ module Api
         post_status: status,
         wp_post_format: "",
         sticky: false,
-        custom_fields: post.custom_fields.reduce([]) do |acc, pair|
+        custom_fields: custom_fields.reduce([]) do |acc, pair|
           key, value = pair
           id = key.unpack("C*").reduce(0, &:+)
           acc.push({ id: id, key: key, value: value })
