@@ -2,7 +2,7 @@ module Api
   include Json
 
   get "/api/posts/:id" do |id|
-    if post = Post.where(id: id).first
+    if post = Post.post.where(id: id).first
       {
         id: id,
         title: post.title,
@@ -16,7 +16,7 @@ module Api
   end
 
   get "/api/posts" do
-    posts = Post.select(:id).map do |p|
+    posts = Post.post.select(:id).map do |p|
       { id: p.id }
     end
 

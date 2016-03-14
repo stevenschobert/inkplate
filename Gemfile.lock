@@ -30,6 +30,7 @@ GEM
       method_source (~> 0.8.1)
       slop (~> 3.4)
     rack (1.6.4)
+    rake (11.1.0)
     rspec (3.4.0)
       rspec-core (~> 3.4.0)
       rspec-expectations (~> 3.4.0)
@@ -63,9 +64,10 @@ DEPENDENCIES
   pg (~> 0.18.3)
   pry (~> 0.10.3)
   rack (~> 1.6.4)
+  rake (~> 11.1.0)
   rspec (~> 3.4.0)
   simple_router (~> 0.9.8)
   simplecov (~> 0.11.0)
 
 BUNDLED WITH
-   1.10.6
+   1.11.2

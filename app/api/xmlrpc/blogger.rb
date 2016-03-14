@@ -8,7 +8,7 @@ module Api
     self.namespace = "blogger"
 
     def deletePost(app_key, post_id, username, password, publish)
-      if post = Post.where(id: post_id).first
+      if post = Post.post.where(id: post_id).first
         if post.destroy
           true
         else

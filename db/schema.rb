@@ -32,6 +32,7 @@ ActiveRecord::Schema.define(version: 20151113225210) do
 
   create_table "posts", force: :cascade do |t|
     t.integer  "status",        default: 0
+    t.integer  "kind",          default: 0
     t.string   "title"
     t.string   "slug"
     t.text     "excerpt"
@@ -42,6 +43,7 @@ ActiveRecord::Schema.define(version: 20151113225210) do
     t.datetime "updated_at",                null: false
   end
 
+  add_index "posts", ["kind"], name: "index_posts_on_kind", using: :btree
   add_index "posts", ["status"], name: "index_posts_on_status", using: :btree
 
 end

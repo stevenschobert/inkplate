@@ -7,7 +7,7 @@ module Api
     self.namespace = "metaWeblog"
 
     def editPost(post_id, username, password, content, publish)
-      if post = Post.where(id: post_id).first
+      if post = Post.post.where(id: post_id).first
         post.attributes = post_params(content)
 
         if post.save
@@ -21,7 +21,7 @@ module Api
     end
 
     def getPost(post_id, username, password)
-      if post = Post.where(id: post_id).first
+      if post = Post.post.where(id: post_id).first
         serialize_post(post)
       else
         raise "Post not found"
@@ -29,7 +29,7 @@ module Api
     end
 
     def getRecentPosts(blog_id, username, password, max_posts = 10)
-      posts = Post.limit(max_posts).order(created_at: :desc)
+      posts = Post.post.limit(max_posts).order(created_at: :desc)
 
       posts.map{ |post| serialize_post(post) }
     end
@@ -89,6 +89,7 @@ module Api
 
     def post_params(params)
       opts = {
+        kind: Post.kinds[:post],
         title: params["title"],
         status: params["post_status"],
         slug: params["wp_slug"],
