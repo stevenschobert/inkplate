@@ -2,20 +2,35 @@
 # https://codex.wordpress.org/XML-RPC_WordPress_API
 module Api
   class Wordpress
-    STATUSES = {
-      "published"   => "publish",     # A published post or page
-      "pending"     => "pending",     # post is pending review
-      "draft"       => "draft",       # a post in draft status
-      "auto-draft"  => "auto-draft",  # a newly created post, with no content
-      "future"      => "future",      # a post to publish in the future
-      "private"     => "private",     # not visible to users who are not logged in
-      "inherit"     => "iherit",      # a revision. see get_children.
-      "trashed"     => "trashed"      # post is in trashbin. added with Version 2.9.
-    }.freeze
-
     include XmlRpc
 
     self.namespace = "wp"
+
+    def deletePage(blog_id, username, password, page_id)
+      if page = Post.page.where(id: page_id).first
+        if page.destroy
+          true
+        else
+          raise "Page not destroyed"
+        end
+      else
+        raise "Page not found"
+      end
+    end
+
+    def editPage(blog_id, page_id, username, password, content, publish)
+      if page = Post.page.where(id: page_id).first
+        page.attributes = page_params(content)
+
+        if page.save
+          true
+        else
+          raise "Error saving page"
+        end
+      else
+        raise "Page not found"
+      end
+    end
 
     def getCategories(blog_id, username, password)
       categories = Category.all
@@ -24,33 +39,17 @@ module Api
     end
 
     def getPages(blog_id, username, password, max_pages = 10)
-      time = Time.new
+      pages = Post.page.limit(max_pages).order(created_at: :desc)
 
-      [{
-        page_id: 1,
-        title: "Test Page 3",
-        dateCreated: time.localtime.to_datetime,
-        date_created_gmt: time.utc.to_datetime,
-        page_status: STATUSES["private"],
-        wp_slug: "test-page",
-        userid: 1,
-        wp_author_id: 1,
-        wp_author: "stevenschobert",
-        wp_author_display_name: "Steven Schobert",
-        wp_password: "",
-        excerpt: "this is an excerpt",
-        description: "this is a desc",
-        text_more: "more text",
-        permaLink: "permalink",
-        mt_allow_comments: 1, # ["none", "open", "closed"]
-        mt_allow_pings: 0,
-        wp_page_parent_id: "",
-        wp_page_parent: "",
-        wp_page_order: 0,
-        wp_page_template: "",
-        categories: [],
-        custom_fields: []
-      }]
+      pages.map{ |page| serialize_page(page) }
+    end
+
+    def getPage(blog_id, page_id, username, password)
+      if page = Post.page.where(id: page_id).first
+        serialize_page(page)
+      else
+        raise "Page not found"
+      end
     end
 
     def getTags(blog_id, username, password)
@@ -77,7 +76,42 @@ module Api
       end
     end
 
+    def newPage(blog_id, username, password, content, publish)
+      page = Post.new(page_params(content))
+
+      if page.save
+        page.id.to_s
+      else
+        raise "Error saving page"
+      end
+    end
+
     protected
+
+    def page_params(params)
+      opts = {
+        kind: Post.kinds[:page],
+        title: params["title"],
+        status: params["post_status"],
+        slug: params["wp_slug"],
+        excerpt: params["mt_excerpt"],
+        more_text: params["mt_text_more"],
+        body: params["description"]
+      }
+
+      if custom_fields = params["custom_fields"]
+        opts[:custom_fields] = custom_fields.reduce({}) do |acc, pair|
+          acc[pair["key"]] = pair["value"]
+          acc
+        end
+      end
+
+      if opts[:status] == "private"
+        opts[:status] = "invisible"
+      end
+
+      opts
+    end
 
     def serialize_category(category)
       {
@@ -88,6 +122,46 @@ module Api
         description: category.name.to_s,
         htmlUrl: "",
         rssUrl: ""
+      }
+    end
+
+    def serialize_page(page)
+      categories = Category.for_post(page)
+      status = if page.invisible?
+        "private"
+      else
+        page.status
+      end
+      custom_fields = page.custom_fields || []
+
+      {
+        page_id: page.id,
+        title: page.title.to_s,
+        dateCreated: page.created_at.localtime.to_datetime,
+        date_created_gmt: page.created_at.utc,
+        page_status: status,
+        wp_slug: page.slug,
+        userid: 1,
+        wp_author_id: 1,
+        wp_author: "",
+        wp_author_display_name: "",
+        wp_password: "",
+        excerpt: page.excerpt,
+        description: page.body,
+        text_more: page.more_text,
+        permaLink: "http://google.com",
+        mt_allow_comments: 0,
+        mt_allow_pings: 0,
+        wp_page_parent_id: "",
+        wp_page_parent: "",
+        wp_page_order: 0,
+        wp_page_template: "",
+        categories: categories.map{ |c| c.name.to_s },
+        custom_fields: custom_fields.reduce([]) do |acc, pair|
+          key, value = pair
+          id = key.unpack("C*").reduce(0, &:+)
+          acc.push({ id: id, key: key, value: value })
+        end
       }
     end
 
