@@ -46,6 +46,31 @@ module Api
 
     protected
 
+    def post_params(params)
+      opts = {
+        kind: Post.kinds[:post],
+        title: params["title"],
+        status: params["post_status"],
+        slug: params["wp_slug"],
+        excerpt: params["mt_excerpt"],
+        more_text: params["mt_text_more"],
+        body: params["description"]
+      }
+
+      if custom_fields = params["custom_fields"]
+        opts[:custom_fields] = custom_fields.reduce({}) do |acc, pair|
+          acc[pair["key"]] = pair["value"]
+          acc
+        end
+      end
+
+      if opts[:status] == "private"
+        opts[:status] = "invisible"
+      end
+
+      opts
+    end
+
     def serialize_post(post)
       categories = Category.for_post(post)
       status = if post.invisible?
@@ -85,31 +110,6 @@ module Api
           acc.push({ id: id, key: key, value: value })
         end
       }
-    end
-
-    def post_params(params)
-      opts = {
-        kind: Post.kinds[:post],
-        title: params["title"],
-        status: params["post_status"],
-        slug: params["wp_slug"],
-        excerpt: params["mt_excerpt"],
-        more_text: params["mt_text_more"],
-        body: params["description"]
-      }
-
-      if custom_fields = params["custom_fields"]
-        opts[:custom_fields] = custom_fields.reduce({}) do |acc, pair|
-          acc[pair["key"]] = pair["value"]
-          acc
-        end
-      end
-
-      if opts[:status] == "private"
-        opts[:status] = "invisible"
-      end
-
-      opts
     end
 
   end
