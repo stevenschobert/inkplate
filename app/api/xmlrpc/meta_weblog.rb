@@ -44,6 +44,52 @@ module Api
       end
     end
 
+    def newMediaObject(blog_id, username, password, media)
+      dropbox = DropboxInterface.new
+
+      data = media["bits"]
+      path = "/#{ media["name"] }"
+      mode = if media["overwrite"] == true
+        :overwrite
+      else
+        :add
+      end
+
+      create_response = dropbox.upload(data, path: path, write_mode: mode)
+      link_response = if create_response
+        dropbox.create_link(path: create_response["path_lower"])
+      end
+
+      if create_response && link_response
+        upload = Upload.where(dropbox_id: create_response["id"]).first_or_initialize
+
+        upload.mime_type    = media["type"]
+        upload.size         = create_response["size"]
+        upload.dropbox_rev  = create_response["rev"]
+        upload.dropbox_path = create_response["path_lower"]
+
+        url_params            = { "raw" => 1 }
+        dropbox_uri           = URI(link_response["url"])
+        dropbox_uri_params    = URI.decode_www_form(dropbox_uri.query).to_h || {}
+        dropbox_uri.query     = URI.encode_www_form(dropbox_uri_params.merge(url_params))
+
+        upload.dropbox_url = dropbox_uri.to_s
+
+        if upload.save
+          {
+            id: upload.id.to_s,
+            file: upload.dropbox_path,
+            type: upload.mime_type,
+            url: upload.dropbox_url
+          }
+        else
+          raise "Error saving media"
+        end
+      else
+        raise "Error uploading media"
+      end
+    end
+
     protected
 
     def post_params(params)

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151113225210) do
+ActiveRecord::Schema.define(version: 20160322002449) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -45,5 +45,18 @@ ActiveRecord::Schema.define(version: 20151113225210) do
 
   add_index "posts", ["kind"], name: "index_posts_on_kind", using: :btree
   add_index "posts", ["status"], name: "index_posts_on_status", using: :btree
+
+  create_table "uploads", force: :cascade do |t|
+    t.string "name"
+    t.string "mime_type"
+    t.string "size"
+    t.string "dropbox_url"
+    t.string "dropbox_id"
+    t.string "dropbox_path"
+    t.string "dropbox_rev"
+  end
+
+  add_index "uploads", ["dropbox_id"], name: "index_uploads_on_dropbox_id", unique: true, using: :btree
+  add_index "uploads", ["dropbox_url"], name: "index_uploads_on_dropbox_url", using: :btree
 
 end
