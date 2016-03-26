@@ -63,6 +63,7 @@ module Api
       if create_response && link_response
         upload = Upload.where(dropbox_id: create_response["id"]).first_or_initialize
 
+        upload.name         = media["name"]
         upload.mime_type    = media["type"]
         upload.size         = create_response["size"]
         upload.dropbox_rev  = create_response["rev"]
