@@ -47,13 +47,13 @@ ActiveRecord::Schema.define(version: 20160322002449) do
   add_index "posts", ["status"], name: "index_posts_on_status", using: :btree
 
   create_table "uploads", force: :cascade do |t|
-    t.string "name"
-    t.string "mime_type"
-    t.string "size"
-    t.string "dropbox_url"
-    t.string "dropbox_id"
-    t.string "dropbox_path"
-    t.string "dropbox_rev"
+    t.string  "name"
+    t.string  "mime_type"
+    t.integer "size"
+    t.string  "dropbox_url"
+    t.string  "dropbox_id"
+    t.string  "dropbox_path"
+    t.string  "dropbox_rev"
   end
 
   add_index "uploads", ["dropbox_id"], name: "index_uploads_on_dropbox_id", unique: true, using: :btree
