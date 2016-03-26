@@ -3,7 +3,7 @@ class CreateUploads < ActiveRecord::Migration
     create_table :uploads do |t|
       t.string :name
       t.string :mime_type
-      t.string :size
+      t.integer :size
 
       t.string :dropbox_url
       t.string :dropbox_id
