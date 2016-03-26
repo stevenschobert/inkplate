@@ -4,7 +4,7 @@ module Api
   get "/api/pages/:id" do |id|
     if page = Post.page.where(id: id).first
       {
-        id: id,
+        id: page.id,
         title: page.title,
         created_at: page.created_at,
         updated_at: page.updated_at,

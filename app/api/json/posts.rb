@@ -4,7 +4,7 @@ module Api
   get "/api/posts/:id" do |id|
     if post = Post.post.where(id: id).first
       {
-        id: id,
+        id: post.id,
         title: post.title,
         created_at: post.created_at,
         updated_at: post.updated_at,
