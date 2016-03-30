@@ -8,6 +8,7 @@ module Api
         title: post.title,
         created_at: post.created_at,
         updated_at: post.updated_at,
+        status: post.status,
         body: post.body,
         slug: post.slug,
         custom_fields: post.custom_fields

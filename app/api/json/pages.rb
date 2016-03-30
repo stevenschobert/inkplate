@@ -8,6 +8,7 @@ module Api
         title: page.title,
         created_at: page.created_at,
         updated_at: page.updated_at,
+        status: page.status,
         body: page.body,
         slug: page.slug,
         custom_fields: page.custom_fields
