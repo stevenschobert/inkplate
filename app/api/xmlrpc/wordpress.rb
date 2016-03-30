@@ -101,7 +101,7 @@ module Api
       opts = {
         kind: Post.kinds[:page],
         title: params["title"],
-        status: params["post_status"],
+        status: params["page_status"],
         slug: params["wp_slug"],
         excerpt: params["mt_excerpt"],
         more_text: params["mt_text_more"],
