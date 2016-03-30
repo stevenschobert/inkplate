@@ -12,7 +12,21 @@ module Api
       end
     end
 
+    class UnauthorizedError < StandardError
+      def initialize
+        message = "User is not authorized to perform this action."
+
+        super(message)
+      end
+    end
+
     @@klasses = []
+
+    def validate_user!(username, password)
+      unless username == ENV["USERNAME"].to_s && password == ENV["PASSWORD"].to_s
+        raise UnauthorizedError.new
+      end
+    end
 
     def self.included(klass)
       @@klasses << klass

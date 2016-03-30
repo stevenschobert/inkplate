@@ -7,6 +7,8 @@ module Api
     self.namespace = "wp"
 
     def deletePage(blog_id, username, password, page_id)
+      validate_user!(username, password)
+
       if page = Post.page.where(id: page_id).first
         if page.destroy
           true
@@ -19,6 +21,8 @@ module Api
     end
 
     def editPage(blog_id, page_id, username, password, content, publish)
+      validate_user!(username, password)
+
       if page = Post.page.where(id: page_id).first
         page.attributes = page_params(content)
 
@@ -33,18 +37,24 @@ module Api
     end
 
     def getCategories(blog_id, username, password)
+      validate_user!(username, password)
+
       categories = Category.all
 
       categories.map{ |category| serialize_category(category) }
     end
 
     def getPages(blog_id, username, password, max_pages = 10)
+      validate_user!(username, password)
+
       pages = Post.page.limit(max_pages).order(created_at: :desc)
 
       pages.map{ |page| serialize_page(page) }
     end
 
     def getPage(blog_id, page_id, username, password)
+      validate_user!(username, password)
+
       if page = Post.page.where(id: page_id).first
         serialize_page(page)
       else
@@ -53,17 +63,14 @@ module Api
     end
 
     def getTags(blog_id, username, password)
-      [{
-        tag_id: 1,
-        name: "test tag",
-        slug: "test-tag",
-        count: 5,
-        html_url: "html-url",
-        rss_url: "rss-url"
-      }]
+      validate_user!(username, password)
+
+      []
     end
 
     def newCategory(blog_id, username, password, category)
+      validate_user!(username, password)
+
       new_category = Category.new({
         name: category["name"],
         description: category["description"]
@@ -77,6 +84,8 @@ module Api
     end
 
     def newPage(blog_id, username, password, content, publish)
+      validate_user!(username, password)
+
       page = Post.new(page_params(content))
 
       if page.save

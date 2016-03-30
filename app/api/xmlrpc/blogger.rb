@@ -8,6 +8,8 @@ module Api
     self.namespace = "blogger"
 
     def deletePost(app_key, post_id, username, password, publish)
+      validate_user!(username, password)
+
       if post = Post.post.where(id: post_id).first
         if post.destroy
           true

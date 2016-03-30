@@ -7,6 +7,8 @@ module Api
     self.namespace = "metaWeblog"
 
     def editPost(post_id, username, password, content, publish)
+      validate_user!(username, password)
+
       if post = Post.post.where(id: post_id).first
         post.attributes = post_params(content)
 
@@ -21,6 +23,8 @@ module Api
     end
 
     def getPost(post_id, username, password)
+      validate_user!(username, password)
+
       if post = Post.post.where(id: post_id).first
         serialize_post(post)
       else
@@ -29,12 +33,16 @@ module Api
     end
 
     def getRecentPosts(blog_id, username, password, max_posts = 10)
+      validate_user!(username, password)
+
       posts = Post.post.limit(max_posts).order(created_at: :desc)
 
       posts.map{ |post| serialize_post(post) }
     end
 
     def newPost(blog_id, username, password, content, publish)
+      validate_user!(username, password)
+
       post = Post.new(post_params(content))
 
       if post.save
@@ -45,6 +53,8 @@ module Api
     end
 
     def newMediaObject(blog_id, username, password, media)
+      validate_user!(username, password)
+
       dropbox = DropboxInterface.new
 
       data = media["bits"]

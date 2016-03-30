@@ -8,6 +8,8 @@ module Api
     self.namespace = "mt"
 
     def getPostCategories(post_id, username, password)
+      validate_user!(username, password)
+
       categories = Category.for_post(post_id)
 
       categories.map do |category|
@@ -20,6 +22,8 @@ module Api
     end
 
     def setPostCategories(post_id, username, password, categories)
+      validate_user!(username, password)
+
       CategorizedPost.where(post_id: post_id).destroy_all
 
       categories.each do |category|
