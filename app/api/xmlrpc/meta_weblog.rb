@@ -15,7 +15,7 @@ module Api
         if post.save
           true
         else
-          raise "Error saving post"
+          raise StandardError.new("Error saving post: #{ post.errors.full_messages.join(", ") }")
         end
       else
         raise "Post not found"
@@ -48,7 +48,7 @@ module Api
       if post.save
         post.id.to_s
       else
-        raise "Error saving post"
+        raise StandardError.new("Error saving post: #{ post.errors.full_messages.join(", ") }")
       end
     end
 

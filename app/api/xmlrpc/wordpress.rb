@@ -29,7 +29,7 @@ module Api
         if page.save
           true
         else
-          raise "Error saving page"
+          raise StandardError.new("Error saving page: #{ page.errors.full_messages.join(", ") }")
         end
       else
         raise "Page not found"
@@ -79,7 +79,7 @@ module Api
       if new_category.save
         new_category.id
       else
-        raise "Error saving category"
+        raise StandardError.new("Error saving category: #{ new_category.errors.full_messages.join(", ") }")
       end
     end
 
@@ -91,7 +91,7 @@ module Api
       if page.save
         page.id.to_s
       else
-        raise "Error saving page"
+        raise StandardError.new("Error saving page: #{ page.errors.full_messages.join(", ") }")
       end
     end
 
