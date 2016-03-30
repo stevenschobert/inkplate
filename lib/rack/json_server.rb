@@ -15,6 +15,10 @@ class JsonServer
       verb = request.request_method
       path = Rack::Utils.unescape(request.path_info)
 
+      unless request.params["api_key"] == ENV["API_KEY"]
+        return [401, { "Content-Type" => "application/json" }, [ { error: "unauthorized" }.to_json ]]
+      end
+
       if route = Api::Json.routes.match(verb, path)
         if response = route.action.call(*route.values)
           return [200, { "Content-Type" => "application/json" }, [ response.to_json ]]
