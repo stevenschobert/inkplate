@@ -1,3 +1,5 @@
+default: &development
+
 development:
   adapter: postgresql
   encoding: unicode
@@ -14,3 +16,4 @@ production:
   adapter: postgresql
   encoding: unicode
   pool: 25
+
