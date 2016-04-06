@@ -11,6 +11,10 @@ group :development, :test do
   gem 'pry', '~> 0.10.3'
 end
 
+group :production do
+  gem 'puma', '~> 3.3.0'
+end
+
 group :test do
   gem 'simplecov', '~> 0.11.0', require: false
   gem 'rspec', '~> 3.4.0'
