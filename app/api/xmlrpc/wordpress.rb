@@ -109,7 +109,7 @@ module Api
       }
 
       if created_at = params["dateCreated"]
-        opts[:created_at] = created_at.to_time
+        opts[:created_at] = created_at.to_time.localtime
       end
 
       if custom_fields = params["custom_fields"]
