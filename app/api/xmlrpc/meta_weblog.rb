@@ -114,6 +114,10 @@ module Api
         body: params["description"]
       }
 
+      if created_at = params["dateCreated"]
+        opts[:created_at] = created_at.to_time
+      end
+
       if custom_fields = params["custom_fields"]
         opts[:custom_fields] = custom_fields.reduce({}) do |acc, pair|
           acc[pair["key"]] = pair["value"]
