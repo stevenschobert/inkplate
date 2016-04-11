@@ -12,7 +12,8 @@ group :development, :test do
 end
 
 group :production do
-  gem 'puma', '~> 3.3.0'
+  gem 'puma', '~> 3.4.0'
+  gem 'rack-ssl', '~> 1.4.1'
 end
 
 group :test do

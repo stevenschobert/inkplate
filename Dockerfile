@@ -22,8 +22,10 @@ COPY bootstrap.rb config.ru Gemfile Gemfile.lock Rakefile ./
 
 ENV RACK_ENV production
 ENV PORT 3000
+ENV SSL_PORT 3001
 
 EXPOSE 3000
+EXPOSE 3001
 
 RUN bundle install --without development test
 
