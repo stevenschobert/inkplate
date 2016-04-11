@@ -21,6 +21,7 @@ COPY config/ config/
 COPY bootstrap.rb config.ru Gemfile Gemfile.lock Rakefile ./
 
 ENV RACK_ENV production
+ENV HOST 0.0.0.0
 ENV PORT 3000
 ENV SSL_PORT 3001
 
