@@ -14,6 +14,10 @@ test:
 
 production:
   adapter: postgresql
+  host: <%= ENV["POSTGRES_HOST"] %>
+  username: <%= ENV["POSTGRES_USERNAME"] %>
+  password: <%= ENV["POSTGRES_PASSWORD"] %>
+  database: <%= ENV["POSTGRES_DB"] %>
   encoding: unicode
   pool: 25
 
