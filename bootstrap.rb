@@ -1,6 +1,7 @@
 require 'rubygems'
 require 'bundler/setup'
 require 'yaml'
+require 'erb'
 require 'active_record'
 require 'dotenv'
 
@@ -49,7 +50,8 @@ end
 
 
 # Standard Config
-ActiveRecord::Base.configurations = YAML.load_file("config/database.yml")
+db_config = ERB.new(File.new("config/database.yml").read)
+ActiveRecord::Base.configurations = YAML.load(db_config.result(binding))
 ActiveRecord::Tasks::DatabaseTasks.env = ActiveRecord::ConnectionHandling::DEFAULT_ENV.call.to_s
 ActiveRecord::Tasks::DatabaseTasks.db_dir = "db"
 ActiveRecord::Base.establish_connection
