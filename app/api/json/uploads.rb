@@ -6,6 +6,7 @@ module Api
       {
         id: upload.id,
         name: upload.name,
+        checksum: upload.checksum,
         mime_type: upload.mime_type,
         size: upload.size,
         url: upload.dropbox_url

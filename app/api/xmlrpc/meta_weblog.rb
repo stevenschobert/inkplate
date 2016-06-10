@@ -58,6 +58,7 @@ module Api
       dropbox = DropboxInterface.new
 
       data = media["bits"]
+      checksum = Digest::SHA1.hexdigest(data)
       path = "/#{ media["name"] }"
       mode = if media["overwrite"] == true
         :overwrite
@@ -75,6 +76,7 @@ module Api
 
         upload.name         = media["name"]
         upload.mime_type    = media["type"]
+        upload.checksum     = checksum
         upload.size         = create_response["size"]
         upload.dropbox_rev  = create_response["rev"]
         upload.dropbox_path = create_response["path_lower"]
