@@ -66,7 +66,7 @@ module Api
         :add
       end
 
-      create_response = dropbox.upload(data, path: path, write_mode: mode, autorename: true)
+      create_response = dropbox.upload(data, path: path, write_mode: mode)
       link_response = if create_response
         dropbox.create_link(path: create_response["path_lower"])
       end
