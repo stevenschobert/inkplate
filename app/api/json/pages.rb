@@ -10,6 +10,7 @@ module Api
         updated_at: page.updated_at,
         status: page.status,
         body: page.body,
+        excerpt: page.excerpt,
         slug: page.slug,
         custom_fields: page.custom_fields
       }
