@@ -24,7 +24,14 @@ module Api
       validate_user!(username, password)
 
       if page = Post.page.where(id: page_id).first
-        page.attributes = page_params(content)
+        update_params = page_params(content)
+
+        if update_params.key?(:custom_fields)
+          previous_custom_fields = page.custom_fields || {}
+          update_params[:custom_fields] = previous_custom_fields.merge(update_params[:custom_fields])
+        end
+
+        page.attributes = update_params
 
         if page.save
           true

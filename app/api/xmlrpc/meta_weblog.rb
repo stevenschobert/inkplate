@@ -10,7 +10,14 @@ module Api
       validate_user!(username, password)
 
       if post = Post.post.where(id: post_id).first
-        post.attributes = post_params(content)
+        update_params = post_params(content)
+
+        if update_params.key?(:custom_fields)
+          previous_custom_fields = post.custom_fields || {}
+          update_params[:custom_fields] = previous_custom_fields.merge(update_params[:custom_fields])
+        end
+
+        post.attributes = update_params
 
         if post.save
           true
