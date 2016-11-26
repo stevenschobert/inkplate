@@ -1,3 +1,5 @@
+require "linkifier"
+
 # Partial implementation of the Wordpress API in XMLRPC
 # https://codex.wordpress.org/XML-RPC_WordPress_API
 module Api
@@ -169,7 +171,7 @@ module Api
         excerpt: page.excerpt,
         description: page.body,
         text_more: page.more_text,
-        permaLink: "http://google.com",
+        permaLink: Linkifier.link(page),
         mt_allow_comments: 0,
         mt_allow_pings: 0,
         wp_page_parent_id: "",

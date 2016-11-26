@@ -1,3 +1,5 @@
+require "linkifier"
+
 # Partial Wordpress MetaWeblog API in XMLRPC
 # https://codex.wordpress.org/XML-RPC_MetaWeblog_API
 module Api
@@ -159,7 +161,7 @@ module Api
         date_modified: post.updated_at.localtime.to_datetime,
         date_modified_gmt: post.updated_at.utc,
         wp_post_thumbnail: "",
-        permaLink: "http://google.com",
+        permaLink: Linkifier.link(post),
         categories: categories.map{ |c| c.name.to_s },
         mt_keywords: "",
         mt_excerpt: post.excerpt,
