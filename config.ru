@@ -2,6 +2,7 @@ require_relative "bootstrap"
 
 require "rack/json_server"
 require "rack/xmlrpc_server"
+require "rack/auto_discovery_server"
 
 server = Proc.new { |env| [200, {}, []] }
 
@@ -17,6 +18,7 @@ use Rack::Logger
 
 use JsonServer
 use XmlRpcServer
+use AutoDiscoveryServer
 
 run server
 
