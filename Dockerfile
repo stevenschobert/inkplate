@@ -1,4 +1,4 @@
-FROM ruby:2.3
+FROM ruby:2.4.2
 
 # add dumb-init for entrypoint to apps
 COPY support/docker/dumb-init_1.0.1_amd64 /usr/local/bin/dumb-init
