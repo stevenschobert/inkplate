@@ -21,5 +21,17 @@ module Api
       end
     end
 
+    def getUserInfo(app_key, username, password)
+      validate_user!(username, password)
+
+      {
+        nickname: username,
+        userid: 1,
+        url: "",
+        firstname: "",
+        lastname: ""
+      }
+    end
+
   end
 end
