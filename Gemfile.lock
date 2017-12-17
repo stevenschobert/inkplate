@@ -59,6 +59,7 @@ GEM
     thread_safe (0.3.6)
     tzinfo (1.2.4)
       thread_safe (~> 0.1)
+    xmlrpc (0.3.0)
 
 PLATFORMS
   ruby
@@ -75,6 +76,7 @@ DEPENDENCIES
   rspec (~> 3.4.0)
   simple_router (~> 0.9.8)
   simplecov (~> 0.11.0)
+  xmlrpc (~> 0.3.0)
 
 BUNDLED WITH
    1.14.6
