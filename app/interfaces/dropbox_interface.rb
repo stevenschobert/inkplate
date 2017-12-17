@@ -1,3 +1,5 @@
+require 'net/http'
+
 class DropboxInterface
 
   API_VERSION = "2".freeze
