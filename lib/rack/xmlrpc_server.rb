@@ -10,6 +10,7 @@ XMLRPC::Config.const_set(:ENABLE_NIL_PARSER, true)
 
 class XmlRpcServer < XMLRPC::BasicServer
   MATCH_TYPE = "text/xml".freeze
+  MISSING_METHOD_ERR = -32601
 
   attr_reader :app
 
@@ -32,6 +33,13 @@ class XmlRpcServer < XMLRPC::BasicServer
       method_response = begin
         [true, dispatch(method, *params)]
       rescue XMLRPC::FaultException => e
+        err = e
+
+        # emulate Wordpress' missing method error
+        if e.faultCode == XMLRPC::BasicServer::ERR_METHOD_MISSING
+          err = XMLRPC::FaultException.new(MISSING_METHOD_ERR, e.faultString)
+        end
+
         log_request_failure({
           logger: env["rack.logger"],
           request: req,
@@ -39,7 +47,7 @@ class XmlRpcServer < XMLRPC::BasicServer
           exception: e
         })
 
-        [false, e]
+        [false, err]
       rescue Exception => e
         log_request_failure({
           logger: env["rack.logger"],
