@@ -129,6 +129,18 @@ module Api
       end
     end
 
+    def newPost(blog_id, username, password, content)
+      validate_user!(username, password)
+
+      post = Post.new(post_params(content))
+
+      if post.save
+        post.id.to_s
+      else
+        raise StandardError.new("Error saving post: #{ post.errors.full_messages.join(", ") }")
+      end
+    end
+
     protected
 
     def page_params(params)
@@ -143,6 +155,38 @@ module Api
       }
 
       if created_at = params["dateCreated"]
+        opts[:created_at] = created_at.to_time.localtime
+      end
+
+      if custom_fields = params["custom_fields"]
+        opts[:custom_fields] = custom_fields.reduce({}) do |acc, pair|
+          acc[pair["key"]] = pair["value"]
+          acc
+        end
+      end
+
+      if opts[:status] == "private"
+        opts[:status] = "invisible"
+      end
+
+      opts
+    end
+
+    def post_params(params)
+      opts = {
+        kind: Post.kinds[:post],
+        title: params["post_title"],
+        status: params["post_status"],
+        slug: params["post_name"],
+        excerpt: params["post_excerpt"],
+        body: params["post_content"]
+      }
+
+      if params["post_format"] == "Status"
+        opts[:kind] = Post.kinds[:micro]
+      end
+
+      if created_at = params["post_date"]
         opts[:created_at] = created_at.to_time.localtime
       end
 
