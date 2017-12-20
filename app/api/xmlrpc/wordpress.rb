@@ -53,6 +53,31 @@ module Api
       categories.map{ |category| serialize_category(category) }
     end
 
+    def getTerm(blog_id, username, password, taxonomy, term_id)
+      validate_user!(username, password)
+
+      if taxonomy == "category"
+        if category = Category.where(id: term_id).first
+          serialize_category_term(category)
+        else
+          raise "Category ID #{ term_id } not found."
+        end
+      else
+        raise "Invalid taxonomy."
+      end
+    end
+
+    def getTerms(blog_id, username, password, taxonomy, filter = {})
+      validate_user!(username, password)
+
+      if taxonomy == "category"
+        categories = Category.all
+        categories.map{ |category| serialize_category_term(category) }
+      else
+        raise "Invalid taxonomy."
+      end
+    end
+
     def getPages(blog_id, username, password, max_pages = 10)
       validate_user!(username, password)
 
@@ -133,6 +158,20 @@ module Api
       end
 
       opts
+    end
+
+    def serialize_category_term(category)
+      {
+        term_id: category.id.to_s,
+        name: category.name.to_s,
+        slug: "",
+        taxonomy: "category",
+        term_taxonomy_id: category.id.to_s,
+        term_group: "",
+        description: category.name.to_s,
+        parent: category.parent_id.to_s,
+        count: 0,
+      }
     end
 
     def serialize_category(category)
