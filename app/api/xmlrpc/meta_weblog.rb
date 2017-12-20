@@ -125,6 +125,10 @@ module Api
         body: params["description"]
       }
 
+      if params["wp_post_format"] == "Status"
+        opts[:kind] = Post.kinds[:micro]
+      end
+
       if created_at = params["dateCreated"]
         opts[:created_at] = created_at.to_time.localtime
       end
