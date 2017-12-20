@@ -27,7 +27,7 @@ def tree_files(dir, ext: ".rb", files: nil)
 
       if File.file?(path) && File.extname(path) == ext
         files << path
-      else
+      elsif File.directory?(path)
         files = tree_files(path, ext: ext, files: files)
       end
     end
