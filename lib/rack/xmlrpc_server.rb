@@ -8,6 +8,22 @@ XMLRPC::Config.module_eval { remove_const(:ENABLE_NIL_PARSER) }
 XMLRPC::Config.const_set(:ENABLE_NIL_CREATE, true)
 XMLRPC::Config.const_set(:ENABLE_NIL_PARSER, true)
 
+# Monkey-patch the XMLRPC parser to support missing <value> tags inside <params>.
+XMLRPC::XMLParser::REXMLStreamParser::StreamListener.class_eval do
+  alias_method :orig_endElement, :endElement
+
+  def endElement(name)
+    if name == "param"
+      @params << @value
+      @values = []
+    else
+      orig_endElement(name)
+    end
+  end
+
+  alias :tag_end :endElement
+end
+
 class XmlRpcServer < XMLRPC::BasicServer
   MATCH_TYPE = "text/xml".freeze
   MISSING_METHOD_ERR = -32601
