@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 gem 'rake',           '~> 11.1.0'
 gem 'dotenv',         '~> 2.0.2'
-gem 'rack',           '~> 1.6.4'
+gem 'rack',           '~> 2.0.3'
 gem 'simple_router',  '~> 0.9.8'
 gem 'xmlrpc',         '~> 0.3.0'
 gem 'activerecord',   '~> 4.2.7.1'
