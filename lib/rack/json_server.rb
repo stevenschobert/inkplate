@@ -15,7 +15,7 @@ class JsonServer
       verb = request.request_method
       path = Rack::Utils.unescape(request.path_info)
 
-      unless request.params["api_key"] == ENV["API_KEY"]
+      unless request.get_header("HTTP_X_API_KEY") == ENV["API_KEY"]
         return [401, { "Content-Type" => "application/json" }, [ { error: "unauthorized" }.to_json ]]
       end
 
