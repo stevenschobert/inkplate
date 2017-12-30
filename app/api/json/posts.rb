@@ -12,6 +12,7 @@ module Api
         body: post.body,
         excerpt: post.excerpt,
         slug: post.slug,
+        categories: Category.for_post(post).map(&:name),
         custom_fields: post.custom_fields
       }
     end
