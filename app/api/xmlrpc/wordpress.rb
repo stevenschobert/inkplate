@@ -208,6 +208,15 @@ module Api
       post = Post.new(post_params(content))
 
       if post.save
+        terms = content["terms"] || {}
+        category_ids = terms["category"] || []
+
+        category_ids.each do |cat_id|
+          if category = Category.where(id: cat_id).first
+            CategorizedPost.create!(post_id: post.id, category_id: category.id)
+          end
+        end
+
         post.id.to_s
       else
         raise StandardError.new("Error saving post: #{ post.errors.full_messages.join(", ") }")
