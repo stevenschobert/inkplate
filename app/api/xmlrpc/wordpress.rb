@@ -22,6 +22,20 @@ module Api
       end
     end
 
+    def deletePost(blog_id, username, password, post_id)
+      validate_user!(username, password)
+
+      if post = Post.where(id: post_id).first
+        if post.destroy
+          true
+        else
+          raise "Post not destroyed"
+        end
+      else
+        raise "Post not found"
+      end
+    end
+
     def editPage(blog_id, page_id, username, password, content, publish)
       validate_user!(username, password)
 
