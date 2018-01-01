@@ -59,6 +59,18 @@ module Api
       end
     end
 
+    def getAuthors(blog_id, username, password)
+      validate_user!(username, password)
+
+      [
+        {
+          user_id: "1",
+          user_login: username,
+          display_name: username
+        }
+      ]
+    end
+
     def getCategories(blog_id, username, password)
       validate_user!(username, password)
 
