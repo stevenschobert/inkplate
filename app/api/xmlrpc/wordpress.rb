@@ -214,6 +214,40 @@ module Api
       end
     end
 
+    def editPost(blog_id, username, password, post_id, content)
+      validate_user!(username, password)
+
+      if post = Post.where(id: post_id).first
+        update_params = post_params(content)
+
+        terms = content["terms"] || {}
+        if terms.key?("category")
+          CategorizedPost.where(post_id: post.id).destroy_all
+          category_ids = terms["category"] || []
+          category_ids.each do |cat_id|
+            if category = Category.where(id: cat_id).first
+              CategorizedPost.create!(post_id: post_id, category_id: category.id)
+            end
+          end
+        end
+
+        if update_params.key?(:custom_fields)
+          previous_custom_fields = post.custom_fields || {}
+          update_params[:custom_fields] = previous_custom_fields.merge(update_params[:custom_fields])
+        end
+
+        post.attributes = update_params
+
+        if post.save
+          true
+        else
+          raise StandardError.new("Error saving post: #{ post.errors.full_messages.join(", ") }")
+        end
+      else
+        raise "Post not found"
+      end
+    end
+
     protected
 
     def page_params(params)
