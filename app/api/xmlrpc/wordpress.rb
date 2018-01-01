@@ -289,6 +289,10 @@ module Api
         body: params["post_content"]
       }
 
+      if params["post_type"].to_s.downcase == "page"
+        opts[:kind] = Post.kinds[:page]
+      end
+
       if params["post_format"].to_s.downcase == "status"
         opts[:kind] = Post.kinds[:micro]
       end
