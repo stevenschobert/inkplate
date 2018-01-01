@@ -159,6 +159,22 @@ module Api
       end
     end
 
+    def getPosts(blog_id, username, password, filter = {}, fields = [])
+      validate_user!(username, password)
+
+      kinds = [ Post.kinds[:post], Post.kinds[:micro] ]
+      if filter["post_type"] == "page"
+        kinds = Post.kinds[:page]
+      end
+
+      offset = filter.fetch("offset", 0)
+      limit = filter.fetch("number", 10)
+
+      posts = Post.where(kind: kinds).limit(limit).offset(offset).order(created_at: :desc)
+
+      posts.map { |post| serialize_post(post) }
+    end
+
     def newCategory(blog_id, username, password, category)
       validate_user!(username, password)
 
