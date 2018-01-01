@@ -71,6 +71,27 @@ module Api
       ]
     end
 
+    def getUsers(blog_id, username, password, filter = {})
+      validate_user!(username, password)
+
+      [
+        {
+          user_id: "1",
+          username: username,
+          first_name: "",
+          last_name: "",
+          registered: Time.now,
+          bio: "",
+          email: "",
+          nickname: username,
+          nicename: username,
+          url: "",
+          display_name: username,
+          roles: [ ]
+        }
+      ]
+    end
+
     def getCategories(blog_id, username, password)
       validate_user!(username, password)
 
