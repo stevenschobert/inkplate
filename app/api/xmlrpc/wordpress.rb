@@ -149,6 +149,16 @@ module Api
       []
     end
 
+    def getPost(blog_id, username, password, post_id, fields = [])
+      validate_user!(username, password)
+
+      if post = Post.where(id: post_id).first
+        serialize_post(post)
+      else
+        raise "Post not found"
+      end
+    end
+
     def newCategory(blog_id, username, password, category)
       validate_user!(username, password)
 
@@ -274,6 +284,59 @@ module Api
         description: category.name.to_s,
         htmlUrl: "",
         rssUrl: ""
+      }
+    end
+
+    def serialize_post(post)
+      categories = Category.for_post(post)
+      status = if post.invisible?
+        "private"
+      else
+        post.status
+      end
+      type = if post.page?
+        "page"
+      else
+        "post"
+      end
+      fmt = if post.micro?
+        "status"
+      else
+        "standard"
+      end
+      custom_fields = post.custom_fields || []
+
+      {
+        post_id: post.id.to_s,
+        post_title: post.title.to_s,
+        post_date: post.created_at.localtime.to_datetime,
+        post_date_gmt: post.created_at.utc,
+        post_modified: post.updated_at.localtime.to_datetime,
+        post_modified_gmt: post.updated_at.utc,
+        post_status: status,
+        post_type: type,
+        post_format: fmt,
+        post_name: post.slug,
+        post_author: "1",
+        post_password: "",
+        post_excerpt: post.excerpt,
+        post_content: post.body,
+        post_parent: "0",
+        post_mime_type: "",
+        link: Linkifier.link(post),
+        guid: "",
+        menu_order: 0,
+        comment_status: "open",
+        ping_status: "open",
+        sticky: false,
+        post_thumbnail: [],
+        terms: categories.map{ |c| serialize_category_term(c) },
+        enclosure: {},
+        custom_fields: custom_fields.reduce([]) do |acc, pair|
+          key, value = pair
+          id = key.unpack("C*").reduce(0, &:+)
+          acc.push({ id: id, key: key, value: value })
+        end
       }
     end
 
